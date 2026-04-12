@@ -13,6 +13,7 @@
         "cnt": [
           {
             "id": 0,
+            "zoom": false,
             "date": {
               "editing": false,
               "value": {
@@ -62,6 +63,7 @@
           },
           {
             "id": 1,
+            "zoom": false,
             "date": {
               "editing": false,
               "value": {
@@ -139,6 +141,7 @@
         "cnt": [
           {
             "id": 2,
+            "zoom": false,
             "date": {
               "editing": false,
               "value": {
@@ -214,6 +217,7 @@
         "cnt": [
           {
             "id": 3,
+            "zoom": false,
             "date": {
               "editing": false,
               "value": {
@@ -263,6 +267,7 @@
           },
           {
             "id": 4,
+            "zoom": false,
             "date": {
               "editing": false,
               "value": {

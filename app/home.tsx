@@ -1,20 +1,9 @@
 import { JSX, useState } from "react";
-import { Col, Container, Row, Table } from "react-bootstrap";
+import { Button, Col, Container, Modal, Row, Table } from "react-bootstrap";
 import { TdC } from "./tools";
+import { ppfattura } from "./fattura";
+import { cliente, date, ditta, editable, fatt } from "./types";
 
-export type editable<T> = { editing: boolean, value: T }
-
-export type fatt_line = { descr: editable<string>; qta: editable<string> }
-export type date = { d: number; m: number; y: number }
-
-export type fatt_cnt = { lines: fatt_line[], total: editable<number> }
-
-export type fatt_bolla = { fatt: fatt_cnt, bolla: fatt_cnt }
-
-export type fatt = { id: number; date: editable<date>; cnt: fatt_bolla }
-
-export type ditta = { name: editable<string>; cnt: fatt[] }
-export type cliente = { name: editable<string>; ditte: ditta[] }
 
 const date2str = (d:date) => `${d.d}/${d.m}/${d.y}`
 
@@ -57,6 +46,23 @@ type printer = (n:number) => JSX.Element
 const pp_cspan = (name: string, len: number) => (idx:number) =>
   idx === 0 ? <TdC rowSpan={len} name={name} /> : <></>
 
+export const zoomffatt = (setter: (f:fatt) => void, f:fatt, setZoom: (b: boolean) => void) => {
+  let handleClose = () => setZoom(false)
+  return <Modal show={f.zoom} onHide={handleClose}>
+    <Modal.Header closeButton>
+      <Modal.Title>Fattura del {date2str(f.date.value)}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      {ppfattura(setter, f)}
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={handleClose}>
+        Close
+      </Button>
+    </Modal.Footer>
+  </Modal>;
+}
+
 export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, remove:(n:number) => void, f: fatt, index: number) => {
   const setPB = (is_fatt:boolean) => (e: editable<number>) => {
     const fx = {...f}
@@ -64,13 +70,20 @@ export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt
     else fx.cnt.bolla.total = e
     setter(fx)
   }
+  const setZoom = (zoom:boolean) =>{
+    const fx = { ...f, zoom }
+    console.log("Setting zoom to", zoom)
+    setter(fx)
+  }
   return <tr key={index}>
+    {zoomffatt(setter,f, setZoom)}
     {pp_cname(index)}
     {pp_dname(index)}
     <td>{date2str(f.date.value)}</td>
     <td>{pp_edit_nb(f.cnt.fatt.total, setPB(true))}</td>
     <td>{pp_edit_nb(f.cnt.bolla.total, setPB(false))}</td>
-    <td onClick={() => remove(f.id)}>RM</td>
+    <td style={{ cursor: "pointer" }} onClick={() => remove(f.id)}>RM</td>
+    <td style={{ cursor: "pointer" }} onClick={() => setZoom(!f.zoom)}>ZOOM </td>
   </tr>
 }
 
