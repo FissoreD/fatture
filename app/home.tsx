@@ -1,7 +1,7 @@
 import { JSX, useState } from "react";
 import { Button, Col, Container, Modal, Row, Table } from "react-bootstrap";
-import { date2str, TdC } from "./tools";
-import { pp_edit_nb, ppfattura } from "./fattura";
+import { date2str, pp_edit_nb, TdC } from "./tools";
+import { ppfattura } from "./fattura";
 import { cliente, date, ditta, editable, fatt } from "./types";
 
 type printer = (n:number) => JSX.Element
