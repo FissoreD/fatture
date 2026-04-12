@@ -1,11 +1,6 @@
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { Col, Container, Row, Table } from "react-bootstrap";
-
-type TdCenter = { name: string; rowSpan?: number };
-
-const TdC: React.FC<TdCenter> = ({ name, rowSpan }) => {
-  return <td rowSpan={rowSpan || 1} className="align-middle text-center">{name}</td>;
-};
+import { TdC } from "./tools";
 
 export type editable<T> = { editing: boolean, cnt: T }
 
@@ -54,18 +49,12 @@ export function pp_edit_str(p1: editable<string>, setter: ((a: editable<string>)
   return pp_edit(p1, e => e, setter, "text")
 }
 
+type printer = (n:number) => JSX.Element
 
+const pp_cspan = (name: string, len: number) => (idx:number) =>
+  idx === 0 ? <TdC rowSpan={len} name={name} /> : <></>
 
-const ppfatt_line = (setter: (f: fatt_line) => void) => (f: fatt_line, index: number) => {
-  const settDescr = (descr: editable<string>) => { setter({ ...f, descr }) }
-  const settQta = (qta: editable<string>) => { setter({ ...f, qta }) }
-  return <tr key={`${index}`}>
-    <td>{pp_edit_str(f.descr, settDescr)}</td>
-    <td>{pp_edit_str(f.qta, settQta)} </td>
-  </tr>
-}
-
-export const ppfatt = (name: string, len:number) => (setter: (f: fatt) => void, f: fatt, index: number) => {
+export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, f: fatt, index: number) => {
   const setPB = (is_fatt:boolean) => (e: editable<number>) => {
     const fx = {...f}
     if (is_fatt) fx.cnt.fatt[1] = e
@@ -73,33 +62,28 @@ export const ppfatt = (name: string, len:number) => (setter: (f: fatt) => void, 
     setter(fx)
   }
   return <tr>
-    {index === 0 ? <TdC rowSpan={len} name={name} /> : <></>}
+    {pp_cname(index)}
+    {pp_dname(index)}
     <td>{date2str(f.date.cnt)}</td>
     <td>{pp_edit_nb(f.cnt.fatt[1], setPB(true))}</td>
     <td>{pp_edit_nb(f.cnt.bolla[1], setPB(false))}</td>
   </tr>
 }
 
-export const ppditta = (setter: ((d: ditta) => void)) => (d: ditta, index: number) => {
+export const ppditta = (pp_cname: printer) => (setter: ((d: ditta) => void)) => (d: ditta, index: number) => {
   const setterN = (x: editable<string>) => setter({ ...d, name: x })
   const setterF = (idx: number) => (x: fatt) => {
     const cnt = [...d.cnt]
     cnt[idx] = x
     setter({ ...d, cnt })
   }
-  return <Table bordered key={`${index}`}>
-    <thead>
-      <tr>
-        <th>Ditta</th>
-        <th>Data</th>
-        <th>Fattura</th>
-        <th>Bolla</th>
-      </tr>
-    </thead>
-    <tbody>
-      {d.cnt.map((f, idx) => ppfatt(d.name.cnt,d.cnt.length)(setterF(idx),f, idx))}
-    </tbody>
-  </Table>
+  return d.cnt.map((f, idx) => ppfatt((e => pp_cname(index+e)), pp_cspan(d.name.cnt, d.cnt.length))(setterF(idx), f, idx))
+}
+
+function tot_row (c: cliente) {
+  let l = 0
+  c.ditte.forEach(d => l += d.cnt.length);
+  return l
 }
 
 export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: number) => {
@@ -108,8 +92,5 @@ export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: n
     dt[idx] = d
     setter({ ...c, ditte: dt })
   }
-  return <tr key={`${index}`}>
-    <td className="align-middle text-center">{c.name.cnt}</td>
-    <td>{c.ditte.map((d, idx) => ppditta(setterD(idx))(d, idx))}</td>
-  </tr>
+  return c.ditte.map((d, idx) => ppditta(pp_cspan(c.name.cnt, tot_row(c)))(setterD(idx))(d, idx))
 }

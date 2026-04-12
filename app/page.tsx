@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { cliente, ppcliente } from "./home";
 import { Table } from 'react-bootstrap';
 import { MouseEventHandler, useState } from 'react';
+import { TdH } from './tools';
 
 const DownloadJsonButton = (cts: cliente[]) => {
   const handleDownload: MouseEventHandler<HTMLButtonElement> = () => {
@@ -87,6 +88,15 @@ export default function Home() {
   return <>
     {DownloadJsonButton(cts1)}
     {JsonLoader(cts1,setCts)}
-    <Table><tbody>{cts1.map((c, i) => ppcliente(setter(i))(c,i))}</tbody></Table>
+    <Table>
+      <thead>
+        <TdH name='Cliente'/>
+        <TdH name='Ditta'/>
+        <th>Data</th>
+        <th>Fattura</th>
+        <th>Bolla</th>
+      </thead>
+      <tbody>{cts1.map((c, i) => ppcliente(setter(i))(c, i))}</tbody>
+    </Table>
   </>
 }
