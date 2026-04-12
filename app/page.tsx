@@ -1,65 +1,92 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { cliente, ppcliente } from "./home";
+import { Table } from 'react-bootstrap';
+import { MouseEventHandler, useState } from 'react';
+
+const DownloadJsonButton = (cts: cliente[]) => {
+  const handleDownload: MouseEventHandler<HTMLButtonElement> = () => {
+    const data = cts;
+
+    const jsonString = JSON.stringify(data, null, 2);
+
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "data.json";
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <button className="btn btn-primary" onClick={handleDownload}>
+      Download JSON
+    </button>
+  );
+};
+
+function JsonLoader(data:cliente[], setter:((c:cliente[]) => void)) {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFileLoad = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log("File is", file)
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+
+      // ⚠️ TypeScript cast (compile-time only)
+      const typedData = parsed as cliente[];
+      console.log("AAAA", typedData)
+
+      setError(null);
+      setter(typedData);
+    } catch (err) {
+      setError("Invalid JSON file");
+      setter([]);
+    }
+    // TODO: better error menagement
+  };
+
+  return (
+    <div className="container mt-3">
+      <h4>Load JSON File</h4>
+
+      {/* Bootstrap styled file input */}
+      <input
+        type="file"
+        accept="application/json"
+        className="form-control mb-3"
+        onChange={handleFileLoad}
+      />
+
+      {error && <div className="alert alert-danger">{error}</div>}
     </div>
   );
+}
+
+const l: cliente[] = []
+
+export default function Home() {
+  const [cts1, setCts] = useState(l);
+  const setter = (i:number) =>  (c:cliente) => {
+    const cts = [...cts1];
+    cts[i] = c;
+    setCts(cts)
+  }
+  return <>
+    {DownloadJsonButton(cts1)}
+    {JsonLoader(cts1,setCts)}
+    <Table><tbody>{cts1.map((c, i) => ppcliente(setter(i))(c,i))}</tbody></Table>
+  </>
 }
