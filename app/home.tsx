@@ -92,5 +92,9 @@ export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: n
     dt[idx] = d
     setter({ ...c, ditte: dt })
   }
-  return c.ditte.map((d, idx) => ppditta(pp_cspan(c.name.cnt, tot_row(c)))(setterD(idx))(d, idx))
+
+  const ppditta_aux = (d:ditta, idx:number) =>
+    ppditta(pp_cspan(c.name.cnt, tot_row(c)))(setterD(idx))(d, idx)
+
+  return c.ditte.map(ppditta_aux)
 }
