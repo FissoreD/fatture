@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Col, Container, Row, Table } from "react-bootstrap";
 
-type TdCenter = { name: string; };
+type TdCenter = { name: string; rowSpan?: number };
 
-const TdC: React.FC<TdCenter> = ({ name }) => {
-  return <td className="align-middle text-center">{name}</td>;
+const TdC: React.FC<TdCenter> = ({ name, rowSpan }) => {
+  return <td rowSpan={rowSpan || 1} className="align-middle text-center">{name}</td>;
 };
 
 export type editable<T> = { editing: boolean, cnt: T }
@@ -12,28 +12,15 @@ export type editable<T> = { editing: boolean, cnt: T }
 export type pair<T> = { fatt: T, bolla: T }
 export type fatt_line = { descr: editable<string>; qta: editable<string> }
 export type date = { d: number; m: number; y: number }
+
 export type fatt = { id: number; date: editable<date>; cnt: pair<[fatt_line[], editable<number>]> }
 
 export type ditta = { name: editable<string>; cnt: fatt[] }
 export type cliente = { name: editable<string>; ditte: ditta[] }
 
-// export function ppair<T extends string | number>(p: pair<T>) {
-//   return <Container><Row>
-//     <Col> {p.bolla} </Col>
-//     <Col> {p.bolla} </Col>
-//   </Row></Container>
-// }
+const date2str = (d:date) => `${d.d}/${d.m}/${d.y}`
 
 export function pp_edit<T extends string | number>(p1: editable<T>, cast: ((s: string) => T), setter: ((a: editable<T>) => void), type: "number" | "text") {
-  // const [editing, setEditing] = useState(false);
-  // const [p, setData] = useState(p1);
-  // const editing = false
-  // const setEditing = (x: any) => { return }
-  // const p = p1
-  // const setData = (x: any) => { return }
-
-  // if (!editing || !p) {return <>ERROR</>}
-
   const editing = p1.editing
   const setEditing = (b: boolean) => { setter({ ...p1, editing: b }) }
 
@@ -78,41 +65,19 @@ const ppfatt_line = (setter: (f: fatt_line) => void) => (f: fatt_line, index: nu
   </tr>
 }
 
-const ppprezzo = (f: editable<number>, setter: ((a: editable<number>) => void)) =>
-  <tr className="fw-bold">
-    <td className="text-end">TOT</td>
-    <td>{pp_edit_nb(f, setter)}€</td>
+export const ppfatt = (name: string, len:number) => (setter: (f: fatt) => void, f: fatt, index: number) => {
+  const setPB = (is_fatt:boolean) => (e: editable<number>) => {
+    const fx = {...f}
+    if (is_fatt) fx.cnt.fatt[1] = e
+    else fx.cnt.bolla[1] = e
+    setter(fx)
+  }
+  return <tr>
+    {index === 0 ? <TdC rowSpan={len} name={name} /> : <></>}
+    <td>{date2str(f.date.cnt)}</td>
+    <td>{pp_edit_nb(f.cnt.fatt[1], setPB(true))}</td>
+    <td>{pp_edit_nb(f.cnt.bolla[1], setPB(false))}</td>
   </tr>
-
-
-export const ppfatt = (setter: (f: fatt) => void) => (f: fatt, index: number) => {
-  // const setterN = (x: editable<string>) => setter({ ...d, name: x })
-  const setterL = (idx: number) => (x: fatt_line) => {
-    const ft = { ...f }
-    ft.cnt.fatt[0][idx] = x
-    setter(ft)
-  }
-
-  const setterB = (idx: number) => (x: fatt_line) => {
-    const ft = { ...f }
-    ft.cnt.bolla[0][idx] = x
-    setter(ft)
-  }
-
-  return <Table key={`${index}`} bordered>
-    <thead>
-      <tr>
-        <th>Prodotto</th>
-        <th>Quantità</th>
-      </tr>
-    </thead>
-    <tbody>
-      {f.cnt.fatt[0].map((f, idx) => ppfatt_line(setterL(idx))(f, idx))}
-      {ppprezzo(f.cnt.fatt[1], e => f.cnt.fatt[1] = e)}
-      {f.cnt.bolla[0].map((f, idx) => ppfatt_line(setterB(idx))(f, idx))}
-      {ppprezzo(f.cnt.bolla[1], e => f.cnt.bolla[1] = e)}
-    </tbody>
-  </Table>
 }
 
 export const ppditta = (setter: ((d: ditta) => void)) => (d: ditta, index: number) => {
@@ -126,15 +91,13 @@ export const ppditta = (setter: ((d: ditta) => void)) => (d: ditta, index: numbe
     <thead>
       <tr>
         <th>Ditta</th>
-        <th>Content</th>
+        <th>Data</th>
+        <th>Fattura</th>
+        <th>Bolla</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        {/* <TdC name={d.name} /> */}
-        <td>{pp_edit_str(d.name, setterN)}</td>
-        <td>{d.cnt.map((f, idx) => ppfatt(setterF(idx))(f, idx))}</td>
-      </tr>
+      {d.cnt.map((f, idx) => ppfatt(d.name.cnt,d.cnt.length)(setterF(idx),f, idx))}
     </tbody>
   </Table>
 }
