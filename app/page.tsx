@@ -21,9 +21,16 @@ const l6: fatt_line = { descr: mk_editable("fichi"), qta: mk_editable("10 l") }
 const date = mk_editable({ d: 10, m: 1, y: 1 })
 const mk_fatt = (lines: fatt_line[], total:editable<number>) : fatt_cnt => {return {lines, total}}
 
-const f1: fatt = { id: 0, date, cnt: { fatt: mk_fatt([l1], mk_editable(0)), bolla: mk_fatt([l1],mk_editable(1)) } }
-const f2: fatt = { id: 0, date, cnt: { fatt: mk_fatt([l2, l3], mk_editable(1)), bolla: mk_fatt([l1],mk_editable(1)) } }
-const f3: fatt = { id: 0, date, cnt: { fatt: mk_fatt([l4, l5, l6], mk_editable(2)), bolla: mk_fatt([l1],mk_editable(1)) } }
+function nb () {
+  let n = 0
+  return () => n++
+}
+
+const n = nb()
+
+const f1: fatt = { id: n(), date, cnt: { fatt: mk_fatt([l1], mk_editable(0)), bolla: mk_fatt([l1],mk_editable(1)) } }
+const f2: fatt = { id: n(), date, cnt: { fatt: mk_fatt([l2, l3], mk_editable(1)), bolla: mk_fatt([l1],mk_editable(1)) } }
+const f3: fatt = { id: n(), date, cnt: { fatt: mk_fatt([l4, l5, l6], mk_editable(2)), bolla: mk_fatt([l1],mk_editable(1)) } }
 
 const ic: ditta = { name: mk_editable("italcorse"), cnt: [f1,f3] }
 const pm: ditta = { name: mk_editable("petitmarche"), cnt: [f2] }
@@ -116,11 +123,13 @@ export default function Home() {
     {JsonLoader(cts1,setCts)}
     <Table>
       <thead>
-        <TdH name='Cliente'/>
-        <TdH name='Ditta'/>
-        <th>Data</th>
-        <th>Fattura</th>
-        <th>Bolla</th>
+        <tr>
+          <TdH name='Cliente'/>
+          <TdH name='Ditta'/>
+          <th>Data</th>
+          <th>Fattura</th>
+          <th>Bolla</th>
+        </tr>
       </thead>
       <tbody>{cts1.map((c, i) => ppcliente(setter(i))(c, i))}</tbody>
     </Table>

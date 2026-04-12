@@ -57,7 +57,7 @@ type printer = (n:number) => JSX.Element
 const pp_cspan = (name: string, len: number) => (idx:number) =>
   idx === 0 ? <TdC rowSpan={len} name={name} /> : <></>
 
-export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, f: fatt, index: number) => {
+export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, remove:(n:number) => void, f: fatt, index: number) => {
   const setPB = (is_fatt:boolean) => (e: editable<number>) => {
     const fx = {...f}
     if (is_fatt) fx.cnt.fatt.total = e
@@ -70,6 +70,7 @@ export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt
     <td>{date2str(f.date.value)}</td>
     <td>{pp_edit_nb(f.cnt.fatt.total, setPB(true))}</td>
     <td>{pp_edit_nb(f.cnt.bolla.total, setPB(false))}</td>
+    <td onClick={() => remove(f.id)}>RM</td>
   </tr>
 }
 
@@ -80,12 +81,18 @@ export const ppditta = (pp_cname: printer) => (setter: ((d: ditta) => void)) => 
     cnt[idx] = x
     setter({ ...d, cnt })
   }
-  return d.cnt.map((f, idx) => ppfatt((e => pp_cname(index+e)), pp_cspan(d.name.value, d.cnt.length))(setterF(idx), f, idx))
+  const removeF = (id: number) => {
+    const cnt = d.cnt.filter(e => e.id !== id)
+    setter({ ...d, cnt })
+
+  }
+  if (d.cnt.length === 0) return <tr key={index}>{pp_cname(index)}</tr>
+  return d.cnt.map((f, idx) => ppfatt((e => pp_cname(index+e)), pp_cspan(d.name.value, d.cnt.length))(setterF(idx), removeF, f, idx))
 }
 
 function tot_row (c: cliente) {
   let l = 0
-  c.ditte.forEach(d => l += d.cnt.length);
+  c.ditte.forEach(d => l += d.cnt.length || 1);
   return l
 }
 
@@ -96,8 +103,9 @@ export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: n
     setter({ ...c, ditte: dt })
   }
 
-  const ppditta_aux = (d:ditta, idx:number) =>
-    ppditta(pp_cspan(c.name.value, tot_row(c)))(setterD(idx))(d, idx)
+  const ppditta_aux = (d: ditta, idx: number) => {
+    return ppditta(pp_cspan(c.name.value, tot_row(c)))(setterD(idx))(d, idx)
+  }
 
   return c.ditte.map(ppditta_aux)
 }
