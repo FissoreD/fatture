@@ -2,131 +2,131 @@
   {
     "name": {
       "editing": false,
-      "cnt": "Antoine"
+      "value": "Antoine"
     },
     "ditte": [
       {
         "name": {
           "editing": false,
-          "cnt": "italcorse"
+          "value": "italcorse"
         },
         "cnt": [
           {
             "id": 0,
             "date": {
               "editing": false,
-              "cnt": {
+              "value": {
                 "d": 10,
                 "m": 1,
                 "y": 1
               }
             },
             "cnt": {
-              "fatt": [
-                [
+              "fatt": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "4"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 0
+                  "value": 0
                 }
-              ],
-              "bolla": [
-                [
+              },
+              "bolla": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 1
+                  "value": 1
                 }
-              ]
+              }
             }
           },
           {
             "id": 0,
             "date": {
               "editing": false,
-              "cnt": {
+              "value": {
                 "d": 10,
                 "m": 1,
                 "y": 1
               }
             },
             "cnt": {
-              "fatt": [
-                [
+              "fatt": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "latte"
+                      "value": "latte"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 l"
+                      "value": "10 l"
                     }
                   },
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "olio"
+                      "value": "olio"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 l"
+                      "value": "10 l"
                     }
                   },
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "fichi"
+                      "value": "fichi"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 l"
+                      "value": "10 l"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 2
+                  "value": 2
                 }
-              ],
-              "bolla": [
-                [
+              },
+              "bolla": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 1
+                  "value": 1
                 }
-              ]
+              }
             }
           }
         ]
@@ -134,66 +134,66 @@
       {
         "name": {
           "editing": false,
-          "cnt": "petitmarche"
+          "value": "petitmarche"
         },
         "cnt": [
           {
             "id": 0,
             "date": {
               "editing": false,
-              "cnt": {
+              "value": {
                 "d": 10,
                 "m": 1,
                 "y": 1
               }
             },
             "cnt": {
-              "fatt": [
-                [
+              "fatt": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "jambon"
+                      "value": "jambon"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   },
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "prosciutto"
+                      "value": "prosciutto"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 1
+                  "value": 1
                 }
-              ],
-              "bolla": [
-                [
+              },
+              "bolla": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 1
+                  "value": 1
                 }
-              ]
+              }
             }
           }
         ]
@@ -203,131 +203,131 @@
   {
     "name": {
       "editing": false,
-      "cnt": "Noel"
+      "value": "Noel"
     },
     "ditte": [
       {
         "name": {
           "editing": false,
-          "cnt": "italcorse"
+          "value": "italcorse"
         },
         "cnt": [
           {
             "id": 0,
             "date": {
               "editing": false,
-              "cnt": {
+              "value": {
                 "d": 10,
                 "m": 1,
                 "y": 1
               }
             },
             "cnt": {
-              "fatt": [
-                [
+              "fatt": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 0
+                  "value": 0
                 }
-              ],
-              "bolla": [
-                [
+              },
+              "bolla": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 1
+                  "value": 1
                 }
-              ]
+              }
             }
           },
           {
             "id": 0,
             "date": {
               "editing": false,
-              "cnt": {
+              "value": {
                 "d": 10,
                 "m": 1,
                 "y": 1
               }
             },
             "cnt": {
-              "fatt": [
-                [
+              "fatt": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "latte"
+                      "value": "latte"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 l"
+                      "value": "10 l"
                     }
                   },
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "olio"
+                      "value": "olio"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 l"
+                      "value": "10 l"
                     }
                   },
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "fichi"
+                      "value": "fichi"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 l"
+                      "value": "10 l"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 2
+                  "value": 2
                 }
-              ],
-              "bolla": [
-                [
+              },
+              "bolla": {
+                "lines": [
                   {
                     "descr": {
                       "editing": false,
-                      "cnt": "burrata"
+                      "value": "burrata"
                     },
                     "qta": {
                       "editing": false,
-                      "cnt": "10 pz"
+                      "value": "10 pz"
                     }
                   }
                 ],
-                {
+                "total": {
                   "editing": false,
-                  "cnt": 1
+                  "value": 1
                 }
-              ]
+              }
             }
           }
         ]

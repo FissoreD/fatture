@@ -2,13 +2,16 @@ import { JSX, useState } from "react";
 import { Col, Container, Row, Table } from "react-bootstrap";
 import { TdC } from "./tools";
 
-export type editable<T> = { editing: boolean, cnt: T }
+export type editable<T> = { editing: boolean, value: T }
 
-export type pair<T> = { fatt: T, bolla: T }
 export type fatt_line = { descr: editable<string>; qta: editable<string> }
 export type date = { d: number; m: number; y: number }
 
-export type fatt = { id: number; date: editable<date>; cnt: pair<[fatt_line[], editable<number>]> }
+export type fatt_cnt = { lines: fatt_line[], total: editable<number> }
+
+export type fatt_bolla = { fatt: fatt_cnt, bolla: fatt_cnt }
+
+export type fatt = { id: number; date: editable<date>; cnt: fatt_bolla }
 
 export type ditta = { name: editable<string>; cnt: fatt[] }
 export type cliente = { name: editable<string>; ditte: ditta[] }
@@ -19,8 +22,8 @@ export function pp_edit<T extends string | number>(p1: editable<T>, cast: ((s: s
   const editing = p1.editing
   const setEditing = (b: boolean) => { setter({ ...p1, editing: b }) }
 
-  const p = p1.cnt
-  const setData = (b: T) => { setter({ ...p1, cnt: b }) }
+  const p = p1.value
+  const setData = (b: T) => { setter({ ...p1, value: b }) }
 
   const exit = () => { setEditing(false) }
 
@@ -57,16 +60,16 @@ const pp_cspan = (name: string, len: number) => (idx:number) =>
 export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, f: fatt, index: number) => {
   const setPB = (is_fatt:boolean) => (e: editable<number>) => {
     const fx = {...f}
-    if (is_fatt) fx.cnt.fatt[1] = e
-    else fx.cnt.bolla[1] = e
+    if (is_fatt) fx.cnt.fatt.total = e
+    else fx.cnt.bolla.total = e
     setter(fx)
   }
-  return <tr>
+  return <tr key={index}>
     {pp_cname(index)}
     {pp_dname(index)}
-    <td>{date2str(f.date.cnt)}</td>
-    <td>{pp_edit_nb(f.cnt.fatt[1], setPB(true))}</td>
-    <td>{pp_edit_nb(f.cnt.bolla[1], setPB(false))}</td>
+    <td>{date2str(f.date.value)}</td>
+    <td>{pp_edit_nb(f.cnt.fatt.total, setPB(true))}</td>
+    <td>{pp_edit_nb(f.cnt.bolla.total, setPB(false))}</td>
   </tr>
 }
 
@@ -77,7 +80,7 @@ export const ppditta = (pp_cname: printer) => (setter: ((d: ditta) => void)) => 
     cnt[idx] = x
     setter({ ...d, cnt })
   }
-  return d.cnt.map((f, idx) => ppfatt((e => pp_cname(index+e)), pp_cspan(d.name.cnt, d.cnt.length))(setterF(idx), f, idx))
+  return d.cnt.map((f, idx) => ppfatt((e => pp_cname(index+e)), pp_cspan(d.name.value, d.cnt.length))(setterF(idx), f, idx))
 }
 
 function tot_row (c: cliente) {
@@ -94,7 +97,7 @@ export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: n
   }
 
   const ppditta_aux = (d:ditta, idx:number) =>
-    ppditta(pp_cspan(c.name.cnt, tot_row(c)))(setterD(idx))(d, idx)
+    ppditta(pp_cspan(c.name.value, tot_row(c)))(setterD(idx))(d, idx)
 
   return c.ditte.map(ppditta_aux)
 }
