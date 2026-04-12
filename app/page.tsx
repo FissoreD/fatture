@@ -110,7 +110,7 @@ function JsonLoader(data:cliente[], setter:((c:cliente[]) => void)) {
   );
 }
 
-const l: cliente[] = cts
+const l: cliente[] = []
 
 export default function Home() {
   const [cts1, setCts] = useState(l);

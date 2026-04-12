@@ -1,57 +1,38 @@
-import { JSX, useState } from "react";
-import { Button, Col, Container, Modal, Row, Table } from "react-bootstrap";
+import { JSX } from "react";
 import { date2str, pp_edit_nb, TdC } from "./tools";
-import { ppfattura } from "./fattura";
-import { cliente, date, ditta, editable, fatt } from "./types";
+import { zoomffatt } from "./fattura";
+import { cliente, ditta, editable, fatt } from "./types";
 
 type printer = (n:number) => JSX.Element
 
 const pp_cspan = (name: string, len: number) => (idx:number) =>
   idx === 0 ? <TdC rowSpan={len} name={name} /> : <></>
 
-export const zoomffatt = (setter: (f:fatt) => void, f:fatt, setZoom: (b: boolean) => void) => {
-  let handleClose = () => setZoom(false)
-  return <Modal show={f.zoom} onHide={handleClose}>
-    <Modal.Header closeButton>
-      <Modal.Title>Fattura del {date2str(f.date.value)}</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      {ppfattura(setter, f)}
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={handleClose}>
-        Close
-      </Button>
-    </Modal.Footer>
-  </Modal>;
-}
-
 export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, remove:(n:number) => void, f: fatt, index: number) => {
-  const setPB = (is_fatt:boolean) => (e: editable<number>) => {
-    const fx = {...f}
-    if (is_fatt) fx.cnt.fatt.total = e
-    else fx.cnt.bolla.total = e
-    setter(fx)
+  const setterF = (isbolla:boolean) => (total: editable<number>) => {
+    // let cnt = { ...f.cnt }
+    // if (isbolla) cnt.bolla = { ...cnt.bolla, total }
+    // else cnt.fatt = { ...cnt.fatt, total }
+    // setter({ ...f, cnt })
   }
-  const setZoom = (zoom:boolean) =>{
+  const setterZ = (zoom:boolean) =>{
     const fx = { ...f, zoom }
-    console.log("Setting zoom to", zoom)
     setter(fx)
   }
   return <tr key={index}>
-    {zoomffatt(setter,f, setZoom)}
+    {zoomffatt(setter,f, setterZ)}
     {pp_cname(index)}
     {pp_dname(index)}
     <td>{date2str(f.date.value)}</td>
-    <td>{pp_edit_nb(f.cnt.fatt.total, setPB(true))}</td>
-    <td>{pp_edit_nb(f.cnt.bolla.total, setPB(false))}</td>
+    {/* <td>{pp_edit_nb(f.cnt.fatt.total, setterF(false))}</td> */}
+    <td>{f.cnt.fatt.total.value}</td>
+    <td>{f.cnt.bolla.total.value}</td>
     <td style={{ cursor: "pointer" }} onClick={() => remove(f.id)}>RM</td>
-    <td style={{ cursor: "pointer" }} onClick={() => setZoom(!f.zoom)}>ZOOM </td>
+    <td style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>ZOOM </td>
   </tr>
 }
 
 export const ppditta = (pp_cname: printer) => (setter: ((d: ditta) => void)) => (d: ditta, index: number) => {
-  const setterN = (x: editable<string>) => setter({ ...d, name: x })
   const setterF = (idx: number) => (x: fatt) => {
     const cnt = [...d.cnt]
     cnt[idx] = x

@@ -1,6 +1,6 @@
-import { Table } from "react-bootstrap";
+import { Button, Modal, Table } from "react-bootstrap";
 import { editable, fatt, fatt_line } from "./types";
-import { pp_edit_nb, pp_edit_str } from "./tools";
+import { date2str, pp_edit_nb, pp_edit_str } from "./tools";
 
 
 const ppfatt_line = (setter: (f: fatt_line) => void) => (f: fatt_line, index: number) => {
@@ -20,17 +20,20 @@ const ppprezzo = (f: editable<number>, setter: ((a: editable<number>) => void)) 
 
 
 export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
-  // const setterN = (x: editable<string>) => setter({ ...d, name: x })
-  const setterL = (isbolla : boolean, idx: number) => (x: fatt_line) => {
-    const ft = { ...f }
-    isbolla ? ft.cnt.bolla.lines[idx] = x : ft.cnt.fatt.lines[idx] = x
-    setter(ft)
+  const setterL = (isbolla: boolean, idx: number) => (x: fatt_line) => {
+    const lines = isbolla ? [...f.cnt.bolla.lines] : [...f.cnt.fatt.lines]
+    lines[idx] = x
+    let cnt = { ...f.cnt }
+    if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
+    else cnt.fatt = { ...cnt.fatt, lines }
+    setter({ ...f, cnt })
   }
 
-  const setterPrice = (isbolla: boolean) => (v: editable<number>) => {
-    const ft = { ...f }
-    isbolla ? ft.cnt.bolla.total = v : ft.cnt.fatt.total = v
-    setter(ft)
+  const setterPrice = (isbolla: boolean) => (total: editable<number>) => {
+    let cnt = { ...f.cnt }
+    if (isbolla) cnt.bolla = { ...cnt.bolla, total }
+    else cnt.fatt = { ...cnt.fatt, total }
+    setter({ ...f, cnt })
   }
 
   return <Table bordered>
@@ -47,4 +50,21 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
       {ppprezzo(f.cnt.bolla.total, setterPrice(true))}
     </tbody>
   </Table>
+}
+
+export const zoomffatt = (setter: (f:fatt) => void, f:fatt, setZoom: (b: boolean) => void) => {
+  let handleClose = () => setZoom(false)
+  return <Modal show={f.zoom} onHide={handleClose}>
+    <Modal.Header closeButton>
+      <Modal.Title>Fattura del {date2str(f.date.value)}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      {ppfattura(setter, f)}
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={handleClose}>
+        Close
+      </Button>
+    </Modal.Footer>
+  </Modal>;
 }
