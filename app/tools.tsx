@@ -46,3 +46,6 @@ export function pp_edit_str(p1: editable<string>, setter: ((a: editable<string>)
 
 export const date2str = (d: date) => `${d.d}/${d.m}/${d.y}`
 
+export function mk_editable<T>(x:T) : editable<T> {
+  return { editing: false, value:x}
+}

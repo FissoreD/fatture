@@ -5,12 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { cliente, ditta, editable, fatt, fatt_cnt, fatt_line } from "./types";
 import { Container, Table } from 'react-bootstrap';
 import { MouseEventHandler, useState } from 'react';
-import { TdH } from './tools';
+import { mk_editable, TdH } from './tools';
 import { ppcliente } from './home';
-
-function mk_editable<T>(x:T) : editable<T> {
-  return { editing: false, value:x}
-}
 
 const l1: fatt_line = { descr: mk_editable("burrata"), qta: mk_editable("10 pz") }
 const l2: fatt_line = { descr: mk_editable("jambon"), qta: mk_editable("10 pz") }
@@ -82,7 +78,6 @@ function JsonLoader(data:cliente[], setter:((c:cliente[]) => void)) {
 
       // ⚠️ TypeScript cast (compile-time only)
       const typedData = parsed as cliente[];
-      console.log("AAAA", typedData)
 
       setError(null);
       setter(typedData);
@@ -122,7 +117,7 @@ export default function Home() {
   return <>
     {DownloadJsonButton(cts1)}
     {JsonLoader(cts1,setCts)}
-    <Table>
+    {/* <Table>
       <thead>
         <tr>
           <TdH name='Cliente'/>
@@ -133,6 +128,7 @@ export default function Home() {
         </tr>
       </thead>
       <tbody>{cts1.map((c, i) => ppcliente(setter(i))(c, i))}</tbody>
-    </Table>
+    </Table> */}
+    {cts1.map((c, i) => ppcliente(setter(i))(c, i))}
   </>
 }

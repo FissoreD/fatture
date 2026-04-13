@@ -1,14 +1,23 @@
-import { JSX } from "react";
-import { date2str, pp_edit_nb, TdC } from "./tools";
+import { JSX, ReactNode } from "react";
+import { date2str, mk_editable, TdC } from "./tools";
 import { zoomffatt } from "./fattura";
-import { cliente, ditta, editable, fatt } from "./types";
+import { cliente, date, ditta, editable, fatt, fatt_bolla, fatt_cnt } from "./types";
+import { IoCloseCircleSharp } from "react-icons/io5";
+import { Col, Container, FloatingLabel, Form, Modal, Row } from "react-bootstrap";
+import { IoMdAddCircle } from "react-icons/io";
 
-type printer = (n:number) => JSX.Element
+const pp_floating = (name: string, cnt: ReactNode, key?: number, add?:ReactNode) =>
+  <FloatingLabel key={key} label={name}>
+    <div
+      className={`form-control`}
+      style={{ minHeight: "58px", height: "auto" }}
+    >
+      {cnt}
+    </div>
+    {add ? <label style={{ right: "50%", left: "unset" }}>{add}</label> : <></>}
+  </FloatingLabel>
 
-const pp_cspan = (name: string, len: number) => (idx:number) =>
-  idx === 0 ? <TdC rowSpan={len} name={name} /> : <></>
-
-export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt) => void, remove:(n:number) => void, f: fatt, index: number) => {
+export const ppfatt = (setter: (f: fatt) => void, remove:(n:number) => void, f: fatt, index: number) => {
   const setterF = (isbolla:boolean) => (total: editable<number>) => {
     // let cnt = { ...f.cnt }
     // if (isbolla) cnt.bolla = { ...cnt.bolla, total }
@@ -19,20 +28,33 @@ export const ppfatt = (pp_cname: printer,pp_dname: printer) => (setter: (f: fatt
     const fx = { ...f, zoom }
     setter(fx)
   }
-  return <tr key={index}>
+
+  return <Row key={index}>
     {zoomffatt(setter,f, setterZ)}
-    {pp_cname(index)}
-    {pp_dname(index)}
-    <td>{date2str(f.date.value)}</td>
-    {/* <td>{pp_edit_nb(f.cnt.fatt.total, setterF(false))}</td> */}
-    <td>{f.cnt.fatt.total.value}</td>
-    <td>{f.cnt.bolla.total.value}</td>
-    <td style={{ cursor: "pointer" }} onClick={() => remove(f.id)}>RM</td>
-    <td style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>ZOOM </td>
-  </tr>
+    <Col style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>
+      <Container className="b-0 m-0 p-0" style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>
+        <Row className="border rounded p-1 m-1">
+          <Col>{date2str(f.date.value)}</Col>
+          <Col>{f.cnt.fatt.total.value}</Col>
+          <Col>{f.cnt.bolla.total.value}</Col>
+        </Row>
+      </Container>
+    </Col>
+    <Col className="d-flex align-items-center b-0 m-0 p-0" xs="auto" style={{ cursor: "pointer" }} onClick={() => remove(f.id)}><IoCloseCircleSharp /></Col>
+  </Row>
 }
 
-export const ppditta = (pp_cname: printer) => (setter: ((d: ditta) => void)) => (d: ditta, index: number) => {
+const empty_fatt_cnt = () : fatt_cnt => ({lines: [], total: mk_editable(0)})
+const empty_fatt_bolla = (): fatt_bolla => ({ fatt: empty_fatt_cnt(), bolla: empty_fatt_cnt() })
+const now_date = (): editable<date> => {
+  let n = new Date(Date.now())
+  return mk_editable({ d: n.getDay(), m: n.getMonth(), y: n.getFullYear(), })
+}
+const empty_fatt = (): fatt => ({ cnt: empty_fatt_bolla(), date: now_date(), id: Date.now(), zoom: false })
+
+const add_fatt = (adder: (v: void) => void) => <IoMdAddCircle style={{ pointerEvents: "auto", cursor: "pointer" }} onClick={e => adder()} />
+
+export const ppditta = (setter: ((d: ditta) => void)) => (d: ditta, index: number)  : JSX.Element => {
   const setterF = (idx: number) => (x: fatt) => {
     const cnt = [...d.cnt]
     cnt[idx] = x
@@ -43,14 +65,15 @@ export const ppditta = (pp_cname: printer) => (setter: ((d: ditta) => void)) => 
     setter({ ...d, cnt })
 
   }
-  if (d.cnt.length === 0) return <tr key={index}>{pp_cname(index)}</tr>
-  return d.cnt.map((f, idx) => ppfatt((e => pp_cname(index+e)), pp_cspan(d.name.value, d.cnt.length))(setterF(idx), removeF, f, idx))
-}
-
-function tot_row (c: cliente) {
-  let l = 0
-  c.ditte.forEach(d => l += d.cnt.length || 1);
-  return l
+  const addF = () => {
+    const cnt = [empty_fatt(), ...d.cnt]
+    console.log("Old length is", d.cnt.length, "New length is", cnt.length)
+    setter({ ...d, cnt })
+  }
+  let cnt = (
+      <Container> {d.cnt.map((f, idx) => ppfatt(setterF(idx), removeF, f, idx))} </Container>
+  )
+  return pp_floating(d.name.value, cnt, index, add_fatt(addF))
 }
 
 export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: number) => {
@@ -60,9 +83,9 @@ export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: n
     setter({ ...c, ditte: dt })
   }
 
-  const ppditta_aux = (d: ditta, idx: number) => {
-    return ppditta(pp_cspan(c.name.value, tot_row(c)))(setterD(idx))(d, idx)
+  const ppditta_aux = (d: ditta, idx: number) : JSX.Element => {
+    return ppditta(setterD(idx))(d, idx)
   }
 
-  return c.ditte.map(ppditta_aux)
+  return pp_floating(c.name.value, c.ditte.map(ppditta_aux),index)
 }
