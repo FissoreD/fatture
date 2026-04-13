@@ -48,7 +48,7 @@ const empty_fatt_cnt = () : fatt_cnt => ({lines: [], total: mk_editable(0)})
 const empty_fatt_bolla = (): fatt_bolla => ({ fatt: empty_fatt_cnt(), bolla: empty_fatt_cnt() })
 const now_date = (): editable<date> => {
   let n = new Date(Date.now())
-  return mk_editable({ d: n.getDay(), m: n.getMonth(), y: n.getFullYear(), })
+  return mk_editable(n.toDateString())
 }
 const empty_fatt = (): fatt => ({ cnt: empty_fatt_bolla(), date: now_date(), id: Date.now(), zoom: false })
 

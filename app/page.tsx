@@ -3,10 +3,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { cliente, ditta, editable, fatt, fatt_cnt, fatt_line } from "./types";
-import { Container, Table } from 'react-bootstrap';
-import { MouseEventHandler, useState } from 'react';
+import { Container, Nav, Navbar, Table } from 'react-bootstrap';
+import { MouseEventHandler, useRef, useState } from 'react';
 import { mk_editable, TdH } from './tools';
 import { ppcliente } from './home';
+import { FaDownload, FaUpload } from 'react-icons/fa';
 
 const l1: fatt_line = { descr: mk_editable("burrata"), qta: mk_editable("10 pz") }
 const l2: fatt_line = { descr: mk_editable("jambon"), qta: mk_editable("10 pz") }
@@ -38,7 +39,7 @@ const c2: cliente = { name: mk_editable("Noel"), ditte: [ic] }
 const cts = [c1,c2]
 
 const DownloadJsonButton = (cts: cliente[]) => {
-  const handleDownload: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleDownload = () => {
     const data = cts;
 
     const jsonString = JSON.stringify(data, null, 2);
@@ -57,15 +58,11 @@ const DownloadJsonButton = (cts: cliente[]) => {
   };
 
 
-  return (
-    <button className="btn btn-primary" onClick={handleDownload}>
-      Download JSON
-    </button>
-  );
+  return <FaDownload onClick={handleDownload} />;
 };
 
-function JsonLoader(data:cliente[], setter:((c:cliente[]) => void)) {
-  const [error, setError] = useState<string | null>(null);
+function JsonLoader(setter: ((c: cliente[]) => void)) {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileLoad = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,33 +72,30 @@ function JsonLoader(data:cliente[], setter:((c:cliente[]) => void)) {
     try {
       const text = await file.text();
       const parsed = JSON.parse(text);
-
-      // ⚠️ TypeScript cast (compile-time only)
       const typedData = parsed as cliente[];
-
-      setError(null);
       setter(typedData);
     } catch (err) {
-      setError("Invalid JSON file");
       setter([]);
     }
-    // TODO: better error menagement
   };
 
   return (
-    <div className="container mt-3">
-      <h4>Load JSON File</h4>
+    <>
+      <FaUpload onClick={() => inputRef.current?.click()} />
 
-      {/* Bootstrap styled file input */}
-      <input
-        type="file"
-        accept="application/json"
-        className="form-control mb-3"
-        onChange={handleFileLoad}
-      />
+      <div className="container mt-3 d-none">
+        <h4>Load JSON File</h4>
 
-      {error && <div className="alert alert-danger">{error}</div>}
-    </div>
+        {/* Bootstrap styled file input */}
+        <input
+          type="file"
+          accept="application/json"
+          className="form-control mb-3"
+          onChange={handleFileLoad}
+          ref={inputRef} 
+        />
+      </div>
+    </>
   );
 }
 
@@ -109,26 +103,17 @@ const l: cliente[] = []
 
 export default function Home() {
   const [cts1, setCts] = useState(l);
-  const setter = (i:number) =>  (c:cliente) => {
-    const cts = [...cts1];
-    cts[i] = c;
-    setCts(cts)
-  }
+  const setter = (idx:number) => (c:cliente) => setCts(cts.map((c1,i) => i === idx ? c : c1))
   return <>
-    {DownloadJsonButton(cts1)}
-    {JsonLoader(cts1,setCts)}
-    {/* <Table>
-      <thead>
-        <tr>
-          <TdH name='Cliente'/>
-          <TdH name='Ditta'/>
-          <th>Data</th>
-          <th>Fattura</th>
-          <th>Bolla</th>
-        </tr>
-      </thead>
-      <tbody>{cts1.map((c, i) => ppcliente(setter(i))(c, i))}</tbody>
-    </Table> */}
+    <Navbar bg="dark" data-bs-theme="dark">
+      <Container>
+        <Navbar.Brand href="#home">Fatture</Navbar.Brand>
+          <Nav className="me-auto">
+            <Nav.Link href="#home">{DownloadJsonButton(cts1)}</Nav.Link>
+            <Nav.Link href="#link">{JsonLoader(setCts)}</Nav.Link>
+        </Nav>
+      </Container>
+    </Navbar>
     {cts1.map((c, i) => ppcliente(setter(i))(c, i))}
   </>
 }

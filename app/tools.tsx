@@ -1,4 +1,4 @@
-import { editable } from "./types";
+import { date, editable } from "./types";
 
 type TdCenter = { name: string; rowSpan?: number };
 
@@ -44,7 +44,7 @@ export function pp_edit_str(p1: editable<string>, setter: ((a: editable<string>)
   return pp_edit(p1, e => e, setter, "text")
 }
 
-export const date2str = (d: number) => `${(new Date(d)).toLocaleDateString()}`
+export const date2str = (d: date) => `${(new Date(d)).toLocaleDateString()}`
 
 export function mk_editable<T>(x:T) : editable<T> {
   return { editing: false, value:x}
