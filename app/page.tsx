@@ -15,7 +15,7 @@ const l4: fatt_line = { descr: mk_editable("latte"), qta: mk_editable("10 l") }
 const l5: fatt_line = { descr: mk_editable("olio"), qta: mk_editable("10 l") }
 const l6: fatt_line = { descr: mk_editable("fichi"), qta: mk_editable("10 l") }
 
-const date = mk_editable({ d: 10, m: 1, y: 1 })
+const date = mk_editable("2026-04-17")
 const mk_fatt = (lines: fatt_line[], total:editable<number>) : fatt_cnt => {return {lines, total}}
 
 function nb () {

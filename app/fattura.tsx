@@ -1,5 +1,5 @@
-import { Button, Modal, Table } from "react-bootstrap";
-import { editable, fatt, fatt_line } from "./types";
+import { Button, Form, Modal, Table } from "react-bootstrap";
+import { date, editable, fatt, fatt_line } from "./types";
 import { date2str, pp_edit_nb, pp_edit_str } from "./tools";
 
 
@@ -52,11 +52,26 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
   </Table>
 }
 
-export const zoomffatt = (setter: (f:fatt) => void, f:fatt, setZoom: (b: boolean) => void) => {
+export const ppdate = (d: editable<date>, setter: ((d: editable<date>) => void)) => {
+  const setEdit = (editing: boolean) => { setter({ ...d, editing }) }
+  const setDate = (value: string) => setter({ editing:false, value })
+  return d.editing ?
+    <Form.Group>
+      <Form.Control type="date"
+        value={d.value}
+        onChange={(e) => setDate(e.target.value)} />
+    </Form.Group> :
+    <span onClick={() => setEdit(true)}>{new Date(d.value).toLocaleDateString()}</span>
+}
+
+export const zoomffatt = (setter: (f: fatt) => void, f: fatt, setZoom: (b: boolean) => void) => {
+  let setDate = (date: editable<date>) => {
+    setter({...f, date})
+  }
   let handleClose = () => setZoom(false)
   return <Modal show={f.zoom} onHide={handleClose}>
     <Modal.Header closeButton>
-      <Modal.Title>Fattura del {date2str(f.date.value)}</Modal.Title>
+      <Modal.Title>Fattura del {ppdate(f.date, setDate)} </Modal.Title>
     </Modal.Header>
     <Modal.Body>
       {ppfattura(setter, f)}

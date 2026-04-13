@@ -16,11 +16,7 @@
             "zoom": false,
             "date": {
               "editing": false,
-              "value": {
-                "d": 10,
-                "m": 1,
-                "y": 1
-              }
+              "value": "2026-04-17"
             },
             "cnt": {
               "fatt": {
@@ -62,15 +58,11 @@
             }
           },
           {
-            "id": 1,
+            "id": 2,
             "zoom": false,
             "date": {
               "editing": false,
-              "value": {
-                "d": 10,
-                "m": 1,
-                "y": 1
-              }
+              "value": "2026-04-17"
             },
             "cnt": {
               "fatt": {
@@ -140,15 +132,11 @@
         },
         "cnt": [
           {
-            "id": 2,
+            "id": 1,
             "zoom": false,
             "date": {
               "editing": false,
-              "value": {
-                "d": 10,
-                "m": 1,
-                "y": 1
-              }
+              "value": "2026-04-17"
             },
             "cnt": {
               "fatt": {
@@ -216,15 +204,11 @@
         },
         "cnt": [
           {
-            "id": 3,
+            "id": 0,
             "zoom": false,
             "date": {
               "editing": false,
-              "value": {
-                "d": 10,
-                "m": 1,
-                "y": 1
-              }
+              "value": "2026-04-17"
             },
             "cnt": {
               "fatt": {
@@ -266,15 +250,11 @@
             }
           },
           {
-            "id": 4,
+            "id": 2,
             "zoom": false,
             "date": {
               "editing": false,
-              "value": {
-                "d": 10,
-                "m": 1,
-                "y": 1
-              }
+              "value": "2026-04-17"
             },
             "cnt": {
               "fatt": {

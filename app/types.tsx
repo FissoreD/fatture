@@ -1,7 +1,7 @@
 export type editable<T> = { editing: boolean, value: T }
 
 export type fatt_line = { descr: editable<string>; qta: editable<string> }
-export type date = { d: number; m: number; y: number }
+export type date = string
 
 export type fatt_cnt = { lines: fatt_line[], total: editable<number> }
 
