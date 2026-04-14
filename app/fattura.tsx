@@ -1,9 +1,8 @@
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import { date, editable, fatt, fatt_line } from "./types";
-import { date2str, labelAbsolutePosition, mk_editable, pp_edit_nb, pp_edit_str } from "./tools";
+import { labelAbsolutePosition, mk_editable, pp_edit_nb, pp_edit_str } from "./tools";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { IoMdAddCircle } from "react-icons/io";
-import { CSSProperties, ReactNode } from "react";
 
 const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt_line, index: number) => {
   const settDescr = (descr: editable<string>) => { setter({ ...f, descr }) }
@@ -29,31 +28,28 @@ const ppprezzo = (f: editable<number>, adder: () => void, setter: ((a: editable<
 const fatt_list = () : fatt_line => ({descr: mk_editable("xx"), qta: mk_editable("xx")})
 
 export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
-  const setterL = (isbolla: boolean, idx: number) => (x: fatt_line) => {
-    const lines = isbolla ? [...f.cnt.bolla.lines] : [...f.cnt.fatt.lines]
-    lines[idx] = x
+  const clone = (isbolla: boolean, lines: fatt_line[]) => {
     let cnt = { ...f.cnt }
     if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
     else cnt.fatt = { ...cnt.fatt, lines }
-    setter({ ...f, cnt })
+    return {...f, cnt}
+  }
+
+  const setterL = (isbolla: boolean, idx: number) => (x: fatt_line) => {
+    const lines = (isbolla ? f.cnt.bolla.lines : f.cnt.fatt.lines)
+            .map((l, i) => i === idx ? x : l)
+    setter(clone(isbolla, lines))
   }
 
   const adder = (isbolla: boolean) => () => {
     const lines = isbolla ? [fatt_list(), ...f.cnt.bolla.lines] : [fatt_list(), ...f.cnt.fatt.lines]
-    let cnt = { ...f.cnt }
-    if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
-    else cnt.fatt = { ...cnt.fatt, lines }
-    setter({ ...f, cnt })
+    setter(clone(isbolla, lines))
   }
 
   const removeL = (isbolla: boolean, idx: number) => () => {
     const lines = (isbolla ? f.cnt.bolla.lines : f.cnt.fatt.lines)
         .filter((_, i) => i !== idx)
-
-    let cnt = { ...f.cnt }
-    if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
-    else cnt.fatt = { ...cnt.fatt, lines }
-    setter({ ...f, cnt })
+    setter(clone(isbolla, lines))
   }
 
   const setterPrice = (isbolla: boolean) => (total: editable<number>) => {

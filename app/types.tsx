@@ -11,3 +11,5 @@ export type fatt = { id: number; date: editable<date>; cnt: fatt_bolla; zoom: bo
 
 export type ditta = { name: editable<string>; cnt: fatt[] }
 export type cliente = { name: editable<string>; ditte: ditta[] }
+
+export type position = { left?: number | string, right?: number | string, top?: number | string, bottom?: number | string }

@@ -1,5 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
-import { date, editable } from "./types";
+import { date, editable, position } from "./types";
 
 type TdCenter = { name: string; rowSpan?: number };
 
@@ -50,9 +50,6 @@ export const date2str = (d: date) => `${(new Date(d)).toLocaleDateString()}`
 export function mk_editable<T>(x:T) : editable<T> {
   return { editing: false, value:x}
 }
-
-
-export type position = {left?:number|string, right?:number|string, top?:number|string, bottom?:number|string}
 
 export const button_position = (p:position): CSSProperties  =>
   ({ pointerEvents: "auto", cursor: "pointer", position: "absolute", width: "auto", ...p })
