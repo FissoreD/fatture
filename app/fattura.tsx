@@ -1,14 +1,17 @@
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import { date, editable, fatt, fatt_line } from "./types";
 import { date2str, pp_edit_nb, pp_edit_str } from "./tools";
+import { IoCloseCircleSharp } from "react-icons/io5";
 
 
-const ppfatt_line = (setter: (f: fatt_line) => void) => (f: fatt_line, index: number) => {
+const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt_line, index: number) => {
   const settDescr = (descr: editable<string>) => { setter({ ...f, descr }) }
   const settQta = (qta: editable<string>) => { setter({ ...f, qta }) }
   return <tr key={`${index}`}>
     <td>{pp_edit_str(f.descr, settDescr)}</td>
-    <td>{pp_edit_str(f.qta, settQta)} </td>
+    <td className="position-relative">{pp_edit_str(f.qta, settQta)}
+      <label className="b-0 m-0 p-0 align-middle text-center" style={{ pointerEvents: "auto", cursor: "pointer", position: "absolute", right: 0, top: "-11pt", width: "auto" }} onClick={remove}><IoCloseCircleSharp /></label>
+    </td>
   </tr>
 }
 
@@ -23,6 +26,16 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
   const setterL = (isbolla: boolean, idx: number) => (x: fatt_line) => {
     const lines = isbolla ? [...f.cnt.bolla.lines] : [...f.cnt.fatt.lines]
     lines[idx] = x
+    let cnt = { ...f.cnt }
+    if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
+    else cnt.fatt = { ...cnt.fatt, lines }
+    setter({ ...f, cnt })
+  }
+
+  const removeL = (isbolla: boolean, idx: number) => () => {
+    const lines = (isbolla ? f.cnt.bolla.lines : f.cnt.fatt.lines)
+        .filter((_, i) => i !== idx)
+
     let cnt = { ...f.cnt }
     if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
     else cnt.fatt = { ...cnt.fatt, lines }
@@ -44,9 +57,9 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
       </tr>
     </thead>
     <tbody>
-      {f.cnt.fatt.lines.map((f, idx) => ppfatt_line(setterL(false,idx))(f, idx))}
+      {f.cnt.fatt.lines.map((f, idx) => ppfatt_line(setterL(false,idx), removeL(false, idx), f, idx))}
       {ppprezzo(f.cnt.fatt.total, setterPrice(false))}
-      {f.cnt.bolla.lines.map((f, idx) => ppfatt_line(setterL(true,idx))(f, idx))}
+      {f.cnt.bolla.lines.map((f, idx) => ppfatt_line(setterL(true,idx), removeL(true, idx), f, idx))}
       {ppprezzo(f.cnt.bolla.total, setterPrice(true))}
     </tbody>
   </Table>

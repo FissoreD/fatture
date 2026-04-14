@@ -3,10 +3,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { cliente, ditta, editable, fatt, fatt_cnt, fatt_line } from "./types";
-import { Container, Nav, Navbar, Table } from 'react-bootstrap';
-import { MouseEventHandler, useRef, useState } from 'react';
-import { mk_editable, TdH } from './tools';
-import { ppcliente } from './home';
+import { Col, Container, Nav, Navbar } from 'react-bootstrap';
+import { useRef, useState } from 'react';
+import { mk_editable } from './tools';
+import { ppcliente } from './clienti';
 import { FaDownload, FaUpload } from 'react-icons/fa';
 
 const l1: fatt_line = { descr: mk_editable("burrata"), qta: mk_editable("10 pz") }
@@ -114,6 +114,10 @@ export default function Home() {
         </Nav>
       </Container>
     </Navbar>
-    {cts1.map((c, i) => ppcliente(setter(i))(c, i))}
+    <Container className='d-flex justify-content-center'>
+    <Col style={{maxWidth: 500}}>
+      {cts1.map((c, i) => ppcliente(setter(i))(c, i))}
+    </Col>
+    </Container>
   </>
 }

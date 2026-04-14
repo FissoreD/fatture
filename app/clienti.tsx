@@ -7,7 +7,7 @@ import { Col, Container, FloatingLabel, Form, Modal, Row } from "react-bootstrap
 import { IoMdAddCircle } from "react-icons/io";
 
 const pp_floating = (name: string, cnt: ReactNode, key?: number, add?:ReactNode) =>
-  <FloatingLabel key={key} label={name}>
+  <FloatingLabel className="mb-2" key={key} label={name} >
     <div
       className={`form-control`}
       style={{ minHeight: "58px", height: "auto" }}
@@ -31,16 +31,16 @@ export const ppfatt = (setter: (f: fatt) => void, remove:(n:number) => void, f: 
 
   return <Row key={index}>
     {zoomffatt(setter,f, setterZ)}
-    <Col style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>
-      <Container className="b-0 m-0 p-0" style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>
-        <Row className="border rounded p-1 m-1">
+    <Col>
+      <Container className="border rounded p-1 m-1 position-relative">
+        <Row style={{ cursor: "pointer" }} onClick={() => setterZ(!f.zoom)}>
           <Col>{date2str(f.date.value)}</Col>
           <Col>{f.cnt.fatt.total.value}</Col>
           <Col>{f.cnt.bolla.total.value}</Col>
         </Row>
+        <label className="b-0 m-0 p-0 align-middle text-center" style={{ pointerEvents: "auto", cursor: "pointer", position: "absolute", right: 0, top: "-50%", width: "auto" }} onClick={() => remove(f.id)}><IoCloseCircleSharp /></label>
       </Container>
     </Col>
-    <Col className="d-flex align-items-center b-0 m-0 p-0" xs="auto" style={{ cursor: "pointer" }} onClick={() => remove(f.id)}><IoCloseCircleSharp /></Col>
   </Row>
 }
 
