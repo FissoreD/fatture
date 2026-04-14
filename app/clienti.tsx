@@ -1,5 +1,5 @@
 import { JSX, ReactNode } from "react";
-import { date2str, mk_editable } from "./tools";
+import { date2str, labelAbsolutePosition, mk_editable } from "./tools";
 import { zoomffatt } from "./fattura";
 import { cliente, date, ditta, editable, fatt, fatt_bolla, fatt_cnt } from "./types";
 import { IoCloseCircleSharp } from "react-icons/io5";
@@ -38,7 +38,7 @@ export const ppfatt = (setter: (f: fatt) => void, remove:(n:number) => void, f: 
           <Col>{f.cnt.fatt.total.value}</Col>
           <Col>{f.cnt.bolla.total.value}</Col>
         </Row>
-        <label className="b-0 m-0 p-0 align-middle text-center" style={{ pointerEvents: "auto", cursor: "pointer", position: "absolute", right: 0, top: "-50%", width: "auto" }} onClick={() => remove(f.id)}><IoCloseCircleSharp /></label>
+        {labelAbsolutePosition({ right: 0, top: "-50%" }, () => remove(f.id), <IoCloseCircleSharp />)}
       </Container>
     </Col>
   </Row>
@@ -76,7 +76,7 @@ export const ppditta = (setter: ((d: ditta) => void)) => (d: ditta, index: numbe
   return pp_floating(d.name.value, cnt, index, add_fatt(addF))
 }
 
-export const ppcliente = (setter: (c: cliente) => void) => (c: cliente, index: number) => {
+export const ppcliente = (setter: (c: cliente) => void, c: cliente, index: number) => {
   const setterD = (idx: number) => (d: ditta) => {
     const dt = [...c.ditte]
     dt[idx] = d

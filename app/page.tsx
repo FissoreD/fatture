@@ -116,7 +116,7 @@ export default function Home() {
     </Navbar>
     <Container className='d-flex justify-content-center'>
     <Col style={{maxWidth: 500}}>
-      {cts1.map((c, i) => ppcliente(setter(i))(c, i))}
+      {cts1.map((c, i) => ppcliente(setter(i), c, i))}
     </Col>
     </Container>
   </>

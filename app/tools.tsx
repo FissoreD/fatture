@@ -1,3 +1,4 @@
+import { CSSProperties, ReactNode } from "react";
 import { date, editable } from "./types";
 
 type TdCenter = { name: string; rowSpan?: number };
@@ -49,3 +50,12 @@ export const date2str = (d: date) => `${(new Date(d)).toLocaleDateString()}`
 export function mk_editable<T>(x:T) : editable<T> {
   return { editing: false, value:x}
 }
+
+
+export type position = {left?:number|string, right?:number|string, top?:number|string, bottom?:number|string}
+
+export const button_position = (p:position): CSSProperties  =>
+  ({ pointerEvents: "auto", cursor: "pointer", position: "absolute", width: "auto", ...p })
+
+export const labelAbsolutePosition = (p:position, action: () => void, img: ReactNode) =>
+  <label className="b-0 m-0 p-0 align-middle text-center" style={button_position(p)} onClick={action}>{img}</label>
