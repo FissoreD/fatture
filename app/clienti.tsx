@@ -1,9 +1,9 @@
 import { JSX, ReactNode } from "react";
-import { date2str, mk_editable, TdC } from "./tools";
+import { date2str, mk_editable } from "./tools";
 import { zoomffatt } from "./fattura";
 import { cliente, date, ditta, editable, fatt, fatt_bolla, fatt_cnt } from "./types";
 import { IoCloseCircleSharp } from "react-icons/io5";
-import { Col, Container, FloatingLabel, Form, Modal, Row } from "react-bootstrap";
+import { Col, Container, FloatingLabel, Row } from "react-bootstrap";
 import { IoMdAddCircle } from "react-icons/io";
 
 const pp_floating = (name: string, cnt: ReactNode, key?: number, add?:ReactNode) =>

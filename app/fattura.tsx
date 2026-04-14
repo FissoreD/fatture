@@ -1,7 +1,8 @@
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import { date, editable, fatt, fatt_line } from "./types";
-import { date2str, pp_edit_nb, pp_edit_str } from "./tools";
+import { date2str, mk_editable, pp_edit_nb, pp_edit_str } from "./tools";
 import { IoCloseCircleSharp } from "react-icons/io5";
+import { IoMdAddCircle } from "react-icons/io";
 
 
 const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt_line, index: number) => {
@@ -15,17 +16,29 @@ const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt
   </tr>
 }
 
-const ppprezzo = (f: editable<number>, setter: ((a: editable<number>) => void)) =>
+const ppprezzo = (f: editable<number>, adder: () => void, setter: ((a: editable<number>) => void)) =>
   <tr className="fw-bold">
     <td className="text-end">TOT</td>
-    <td>{pp_edit_nb(f, setter)}€</td>
+    <td className="position-relative">
+      {pp_edit_nb(f, setter)}€
+      <label className="b-0 m-0 p-0 align-middle text-center" style={{ pointerEvents: "auto", cursor: "pointer", position: "absolute", left: -10, top: -15, width: "auto" }} onClick={adder}><IoMdAddCircle /></label>
+    </td>
   </tr>
 
+const fatt_list = () : fatt_line => ({descr: mk_editable("xx"), qta: mk_editable("xx")})
 
 export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
   const setterL = (isbolla: boolean, idx: number) => (x: fatt_line) => {
     const lines = isbolla ? [...f.cnt.bolla.lines] : [...f.cnt.fatt.lines]
     lines[idx] = x
+    let cnt = { ...f.cnt }
+    if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
+    else cnt.fatt = { ...cnt.fatt, lines }
+    setter({ ...f, cnt })
+  }
+
+  const adder = (isbolla: boolean) => () => {
+    const lines = isbolla ? [fatt_list(), ...f.cnt.bolla.lines] : [fatt_list(), ...f.cnt.fatt.lines]
     let cnt = { ...f.cnt }
     if (isbolla) cnt.bolla = { ...cnt.bolla, lines }
     else cnt.fatt = { ...cnt.fatt, lines }
@@ -58,9 +71,9 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
     </thead>
     <tbody>
       {f.cnt.fatt.lines.map((f, idx) => ppfatt_line(setterL(false,idx), removeL(false, idx), f, idx))}
-      {ppprezzo(f.cnt.fatt.total, setterPrice(false))}
+      {ppprezzo(f.cnt.fatt.total, adder(false), setterPrice(false))}
       {f.cnt.bolla.lines.map((f, idx) => ppfatt_line(setterL(true,idx), removeL(true, idx), f, idx))}
-      {ppprezzo(f.cnt.bolla.total, setterPrice(true))}
+      {ppprezzo(f.cnt.bolla.total, adder(true), setterPrice(true))}
     </tbody>
   </Table>
 }
