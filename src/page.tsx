@@ -1,13 +1,8 @@
-"use client";
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { cliente, ditta, editable, fatt, fatt_cnt, fatt_line } from "./types";
-import { Col, Container, Nav, Navbar } from 'react-bootstrap';
 import { useRef, useState } from 'react';
 import { mk_editable } from './tools';
 import { ppcliente } from './clienti';
-import { FaDownload, FaUpload } from 'react-icons/fa';
+import { Col, Container, Nav, Navbar } from 'react-bootstrap';
 
 const l1: fatt_line = { descr: mk_editable("burrata"), qta: mk_editable("10 pz") }
 const l2: fatt_line = { descr: mk_editable("jambon"), qta: mk_editable("10 pz") }
@@ -36,7 +31,7 @@ const pm: ditta = { name: mk_editable("petitmarche"), cnt: [f2] }
 const c1: cliente = { name: mk_editable("Antoine"), ditte: [ic, pm] }
 const c2: cliente = { name: mk_editable("Noel"), ditte: [ic] }
 
-const cts = [c1,c2]
+const xxx = [c1,c2]
 
 const DownloadJsonButton = (cts: cliente[]) => {
   const handleDownload = () => {
@@ -58,7 +53,7 @@ const DownloadJsonButton = (cts: cliente[]) => {
   };
 
 
-  return <FaDownload onClick={handleDownload} />;
+  return <div onClick={handleDownload}> Salva </div>;
 };
 
 function JsonLoader(setter: ((c: cliente[]) => void)) {
@@ -81,7 +76,8 @@ function JsonLoader(setter: ((c: cliente[]) => void)) {
 
   return (
     <>
-      <FaUpload onClick={() => inputRef.current?.click()} />
+      {/* <FaUpload onClick={() => inputRef.current?.click()} /> */}
+      <div onClick={() => inputRef.current?.click()}> Apri </div>
 
       <div className="container mt-3 d-none">
         <h4>Load JSON File</h4>
@@ -103,14 +99,14 @@ const l: cliente[] = []
 
 export default function Home() {
   const [cts1, setCts] = useState(l);
-  const setter = (idx:number) => (c:cliente) => setCts(cts.map((c1,i) => i === idx ? c : c1))
+  const setter = (idx:number) => (c:cliente) => setCts(cts1.map((c1,i) => i === idx ? c : c1))
   return <>
     <Navbar bg="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="#home">Fatture</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">{DownloadJsonButton(cts1)}</Nav.Link>
             <Nav.Link href="#link">{JsonLoader(setCts)}</Nav.Link>
+            <Nav.Link href="#home">{DownloadJsonButton(cts1)}</Nav.Link>
         </Nav>
       </Container>
     </Navbar>

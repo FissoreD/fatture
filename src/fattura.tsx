@@ -1,29 +1,33 @@
-import { Button, Form, Modal, Table } from "react-bootstrap";
 import { date, editable, fatt, fatt_line } from "./types";
 import { labelAbsolutePosition, mk_editable, pp_edit_nb, pp_edit_str } from "./tools";
-import { IoCloseCircleSharp } from "react-icons/io5";
-import { IoMdAddCircle } from "react-icons/io";
+import { Button, Form, Modal, Table } from "react-bootstrap";
 
 const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt_line, index: number) => {
   const settDescr = (descr: editable<string>) => { setter({ ...f, descr }) }
   const settQta = (qta: editable<string>) => { setter({ ...f, qta }) }
   return <tr key={`${index}`}>
-    <td>{pp_edit_str(f.descr, settDescr)}</td>
-    <td className="position-relative">
+    <td onClick={() => settDescr({ ...f.descr, editing: true })}>{pp_edit_str(f.descr, settDescr)}</td>
+    <td className="position-relative" onClick={() => settQta({...f.qta, editing:true})}>
       {pp_edit_str(f.qta, settQta)}
-      {labelAbsolutePosition({ right: 0, top: "-11pt" }, remove, <IoCloseCircleSharp />)}
+      {labelAbsolutePosition({ right: 0, top: "-11pt" }, remove, <span>x</span>)}
     </td>
   </tr>
 }
 
-const ppprezzo = (f: editable<number>, adder: () => void, setter: ((a: editable<number>) => void)) =>
-  <tr className="fw-bold">
-    <td className="text-end">TOT</td>
-    <td className="position-relative">
+const ppprezzo = (f: editable<number>, adder: () => void, setter: ((a: editable<number>) => void)) => {
+  const setEditTrue = () => {
+    setter({...f, editing:true})
+  }
+  return <tr className="fw-bold">
+    <td className="position-relative text-end">
+      TOT
+      {labelAbsolutePosition({ right: -5, top: -13 }, adder, <span>+</span>)}
+    </td>
+    <td onClick={setEditTrue}>
       {pp_edit_nb(f, setter)}€
-      {labelAbsolutePosition({ left: -10, top: -15 }, adder, <IoMdAddCircle />)}
     </td>
   </tr>
+}
 
 const fatt_list = () : fatt_line => ({descr: mk_editable("xx"), qta: mk_editable("xx")})
 
@@ -43,6 +47,7 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
 
   const adder = (isbolla: boolean) => () => {
     const lines = isbolla ? [fatt_list(), ...f.cnt.bolla.lines] : [fatt_list(), ...f.cnt.fatt.lines]
+    console.log(lines)
     setter(clone(isbolla, lines))
   }
 

@@ -11,7 +11,7 @@ export const TdH: React.FC<TdCenter> = ({ name }) => {
   return <th className="align-middle text-center">{name}</th>;
 };
 
-export function pp_edit<T extends string | number>(p1: editable<T>, cast: ((s: string) => T), setter: ((a: editable<T>) => void), type: "number" | "text") {
+function pp_edit<T extends string | number>(p1: editable<T>, cast: ((s: string) => T), setter: ((a: editable<T>) => void), type: "number" | "text") {
   const editing = p1.editing
   const setEditing = (b: boolean) => { setter({ ...p1, editing: b }) }
 
@@ -31,7 +31,7 @@ export function pp_edit<T extends string | number>(p1: editable<T>, cast: ((s: s
       className="form-control"
     />
   ) : (
-    <span onClick={() => setEditing(true)} style={{ cursor: "pointer" }}>
+    <span style={{ cursor: "pointer" }}>
       {p}
     </span>
   )} </>
