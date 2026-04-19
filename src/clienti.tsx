@@ -1,7 +1,7 @@
 import { JSX, ReactNode } from "react";
-import { cliente, date, ditta, editable, fatt, fatt_bolla, fatt_cnt } from "./types";
+import { cliente, date, ditta, editable, empty_ditta, empty_fatt, fatt, fatt_bolla, fatt_cnt } from "./types";
 import { Col, Container, Row } from "react-bootstrap";
-import { date2str, labelAbsolutePosition, mk_editable, pp_edit_str } from "./tools";
+import { date2str, labelAbsolutePosition, pp_edit_str } from "./tools";
 import { zoomffatt } from "./fattura";
 
 const pp_floating = (name: editable<string>, setter: (x: editable<string>) => void, cnt: ReactNode, key: number, adder: () => void, remove: () => void) => {
@@ -26,15 +26,6 @@ export const ppfatt = (setter: (f: fatt) => void, remove:(n:number) => void, f: 
     {labelAbsolutePosition({ right: 0, top: "-5pt" }, () => remove(f.id), "x")}
   </Row>
 }
-
-const empty_fatt_cnt = () : fatt_cnt => ({lines: [], total: mk_editable(0)})
-const empty_fatt_bolla = (): fatt_bolla => ({ fatt: empty_fatt_cnt(), bolla: empty_fatt_cnt() })
-const now_date = (): editable<date> => {
-  let n = new Date(Date.now())
-  return mk_editable(n.toDateString())
-}
-const empty_fatt = (): fatt => ({ cnt: empty_fatt_bolla(), date: now_date(), id: Date.now(), zoom: false })
-const empty_ditta = (): ditta => ({ name: mk_editable("xx"), cnt: [] })
 
 export const ppditta = (setter: ((d: ditta) => void), removeD: () => void) => (d: ditta, index: number)  : JSX.Element => {
   const setterF = (idx: number) => (x: fatt) => {

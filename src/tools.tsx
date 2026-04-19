@@ -47,10 +47,6 @@ export function pp_edit_str(p1: editable<string>, setter: ((a: editable<string>)
 
 export const date2str = (d: date) => `${(new Date(d)).toLocaleDateString()}`
 
-export function mk_editable<T>(x:T) : editable<T> {
-  return { editing: false, value:x}
-}
-
 export const button_position = (p:position): CSSProperties  =>
   ({ pointerEvents: "auto", cursor: "pointer", position: "absolute", width: "auto", ...p })
 

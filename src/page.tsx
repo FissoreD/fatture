@@ -1,6 +1,5 @@
-import { cliente, ditta, editable, fatt, fatt_cnt, fatt_line } from "./types";
+import { cliente, ditta, editable, empty_client, fatt, fatt_cnt, fatt_line, mk_editable } from "./types";
 import { useRef, useState } from 'react';
-import { mk_editable } from './tools';
 import { ppcliente } from './clienti';
 import { Col, Container, Nav, Navbar } from 'react-bootstrap';
 
@@ -104,6 +103,7 @@ export default function Home() {
     console.log("Removing cliente at position", idx)
     setCts(cts1.filter((_, i) => idx !== i))
   }
+  const adder = () => setCts([empty_client(), ...cts1])
   return <>
     <Navbar bg="dark" data-bs-theme="dark">
       <Container>
@@ -115,9 +115,12 @@ export default function Home() {
       </Container>
     </Navbar>
     <Container className='d-flex justify-content-center'>
-    <Col style={{maxWidth: 500}}>
+      <Col style={{maxWidth: 500}}>
       {cts1.map((c, i) => ppcliente(remover(i), setter(i), c, i))}
-    </Col>
+      </Col>
+    </Container>
+    <Container className='d-flex justify-content-center'>
+      <label style={{ maxWidth: 500 }} onClick={adder}>Aggiungi cliente</label>
     </Container>
   </>
 }

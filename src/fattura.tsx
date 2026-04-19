@@ -1,5 +1,5 @@
-import { date, editable, fatt, fatt_line } from "./types";
-import { labelAbsolutePosition, mk_editable, pp_edit_nb, pp_edit_str } from "./tools";
+import { date, editable, empty_fatt_list, fatt, fatt_line, mk_editable } from "./types";
+import { labelAbsolutePosition, pp_edit_nb, pp_edit_str } from "./tools";
 import { Button, Form, Modal, Table } from "react-bootstrap";
 
 const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt_line, index: number) => {
@@ -29,8 +29,6 @@ const ppprezzo = (f: editable<number>, adder: () => void, setter: ((a: editable<
   </tr>
 }
 
-const fatt_list = () : fatt_line => ({descr: mk_editable("xx"), qta: mk_editable("xx")})
-
 export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
   const clone = (isbolla: boolean, lines: fatt_line[]) => {
     let cnt = { ...f.cnt }
@@ -46,7 +44,7 @@ export const ppfattura = (setter: (f: fatt) => void, f: fatt) => {
   }
 
   const adder = (isbolla: boolean) => () => {
-    const lines = isbolla ? [fatt_list(), ...f.cnt.bolla.lines] : [fatt_list(), ...f.cnt.fatt.lines]
+    const lines = isbolla ? [empty_fatt_list(), ...f.cnt.bolla.lines] : [empty_fatt_list(), ...f.cnt.fatt.lines]
     console.log(lines)
     setter(clone(isbolla, lines))
   }
