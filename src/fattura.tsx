@@ -5,12 +5,12 @@ import { Button, Form, Modal, Table } from "react-bootstrap";
 const ppfatt_line = (setter: (f: fatt_line) => void, remove: () => void, f: fatt_line, index: number) => {
   const settDescr = (descr: editable<string>) => { setter({ ...f, descr }) }
   const settQta = (qta: editable<string>) => { setter({ ...f, qta }) }
-  return <tr key={`${index}`}>
+  return <tr className="position-relative" key={`${index}`}>
     <td onClick={() => settDescr({ ...f.descr, editing: true })}>{pp_edit_str(f.descr, settDescr)}</td>
-    <td className="position-relative" onClick={() => settQta({...f.qta, editing:true})}>
+    <td onClick={() => settQta({...f.qta, editing:true})}>
       {pp_edit_str(f.qta, settQta)}
-      {labelAbsolutePosition({ right: 0, top: "-11pt" }, remove, <span>x</span>)}
     </td>
+    {labelAbsolutePosition({ right: 0, top: "-11pt" }, remove, "x")}
   </tr>
 }
 
@@ -21,7 +21,7 @@ const ppprezzo = (f: editable<number>, adder: () => void, setter: ((a: editable<
   return <tr className="fw-bold">
     <td className="position-relative text-end">
       TOT
-      {labelAbsolutePosition({ right: -5, top: -13 }, adder, <span>+</span>)}
+      {labelAbsolutePosition({ right: -5, top: -13 }, adder, "+")}
     </td>
     <td onClick={setEditTrue}>
       {pp_edit_nb(f, setter)}€
@@ -108,7 +108,7 @@ export const zoomffatt = (setter: (f: fatt) => void, f: fatt, setZoom: (b: boole
     </Modal.Body>
     <Modal.Footer>
       <Button variant="secondary" onClick={handleClose}>
-        Close
+        Chiudi
       </Button>
     </Modal.Footer>
   </Modal>;

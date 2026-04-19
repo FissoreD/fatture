@@ -54,5 +54,5 @@ export function mk_editable<T>(x:T) : editable<T> {
 export const button_position = (p:position): CSSProperties  =>
   ({ pointerEvents: "auto", cursor: "pointer", position: "absolute", width: "auto", ...p })
 
-export const labelAbsolutePosition = (p:position, action: () => void, img: ReactNode) =>
+export const labelAbsolutePosition = (p:position, action: () => void, img: string) =>
   <label className="b-0 m-0 p-0 align-middle text-center" style={button_position(p)} onClick={action}>{img}</label>

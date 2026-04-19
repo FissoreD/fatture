@@ -99,7 +99,11 @@ const l: cliente[] = []
 
 export default function Home() {
   const [cts1, setCts] = useState(l);
-  const setter = (idx:number) => (c:cliente) => setCts(cts1.map((c1,i) => i === idx ? c : c1))
+  const setter = (idx: number) => (c: cliente) => setCts(cts1.map((c1, i) => i === idx ? c : c1))
+  const remover = (idx: number) => () => {
+    console.log("Removing cliente at position", idx)
+    setCts(cts1.filter((_, i) => idx !== i))
+  }
   return <>
     <Navbar bg="dark" data-bs-theme="dark">
       <Container>
@@ -112,7 +116,7 @@ export default function Home() {
     </Navbar>
     <Container className='d-flex justify-content-center'>
     <Col style={{maxWidth: 500}}>
-      {cts1.map((c, i) => ppcliente(setter(i), c, i))}
+      {cts1.map((c, i) => ppcliente(remover(i), setter(i), c, i))}
     </Col>
     </Container>
   </>
