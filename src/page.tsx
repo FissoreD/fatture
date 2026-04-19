@@ -111,6 +111,7 @@ export default function Home() {
           <Nav className="me-auto">
             <Nav.Link href="#link">{JsonLoader(setCts)}</Nav.Link>
             <Nav.Link href="#home">{DownloadJsonButton(cts1)}</Nav.Link>
+            <Nav.Link href="#home"><div onClick={adder}> +Cliente </div></Nav.Link>
         </Nav>
       </Container>
     </Navbar>
@@ -118,9 +119,6 @@ export default function Home() {
       <Col style={{maxWidth: 500}}>
       {cts1.map((c, i) => ppcliente(remover(i), setter(i), c, i))}
       </Col>
-    </Container>
-    <Container className='d-flex justify-content-center'>
-      <label style={{ maxWidth: 500 }} onClick={adder}>Aggiungi cliente</label>
     </Container>
   </>
 }
