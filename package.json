@@ -1,6 +1,7 @@
 {
   "name": "fatture",
   "version": "0.1.0",
+  "homepage": "https://fissored.github.io/fatture",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
